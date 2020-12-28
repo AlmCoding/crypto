@@ -5,7 +5,7 @@ from bit.network import NetworkAPI
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Offline Bitcoin Transactions')
-    parser.add_argument('--prepare-transaction', dest='prepare_transaction', action='store_true',
+    parser.add_argument('--prepare', dest='prepare_transaction', action='store_true',
                         help='Prepare transaction (offline)')
     parser.add_argument('--input-address', dest='input_address', type=str,
                         help='Input address (offline)')
@@ -17,9 +17,9 @@ if __name__ == '__main__':
                         help='Amount of bitcoins (offline)')
     parser.add_argument('--message', dest='message', type=str,
                         help='Transaction message (optional)')
-    parser.add_argument('--sign-transaction', dest='prepared_transaction', type=str,
+    parser.add_argument('--sign', dest='prepared_transaction', type=str,
                         help='Sign prepared transaction (offline)')
-    parser.add_argument('--broadcast-transaction', dest='signed_transaction', type=str,
+    parser.add_argument('--broadcast', dest='signed_transaction', type=str,
                         help='Broadcast signed transaction (online)')
     parser.add_argument('--use-testnet', dest='use_testnet', action='store_true',
                         help='Use testnet')
@@ -29,21 +29,23 @@ if __name__ == '__main__':
     Key = PrivateKeyTestnet if args.use_testnet else PrivateKey
 
     if args.prepare_transaction:
-        if not args.leftover_address:
-            args.leftover_address = args.input_address
-
+        
         if args.send_bitcoins == 'ALL':
-            assert args.input_address == args.leftover_address
+            args.leftover_address = args.output_address
             outputs = []
         else:
             outputs = [(args.output_address, float(args.send_bitcoins), 'btc')]
 
-        print('======================================== Prepare Transaction ==========================================')
+        if not args.leftover_address:
+            args.leftover_address = args.input_address
+
+        print('====================================== Prepare Transaction ========================================')
         print(f'Input address: {args.input_address}')
         print(f'Output address: {args.output_address}')
-        print(f'Leftover address: {args.leftover_address}')
+        if outputs:
+            print(f'Leftover address: {args.leftover_address}')
         print(f'Send bitcoins: {args.send_bitcoins}')
-        print('=======================================================================================================')
+        print('===================================================================================================')
 
         transaction = Key.prepare_transaction(args.input_address, outputs, leftover=args.leftover_address,
                                               message=args.message)
@@ -53,10 +55,10 @@ if __name__ == '__main__':
             file.write(transaction)
 
         print(f'Prepared transaction: {file_name}')
-        print('=======================================================================================================')
+        print('===================================================================================================')
 
     if args.prepared_transaction:
-        print('========================================== Sign Transaction ===========================================')
+        print('======================================== Sign Transaction =========================================')
         print(f'Sign transaction: {args.prepared_transaction}')
 
         with open(args.prepared_transaction, 'r') as file:
@@ -70,16 +72,16 @@ if __name__ == '__main__':
             file.write(transaction)
 
         print(f'Signed transaction: {file_name}')
-        print('=======================================================================================================')
+        print('===================================================================================================')
 
     if args.signed_transaction:
-        print('======================================== Broadcast Transaction ========================================')
+        print('====================================== Broadcast Transaction ======================================')
         print(f'Broadcast transaction: {args.signed_transaction}')
 
         with open(args.signed_transaction, 'r') as file:
             transaction = file.read()
 
-        transaction_hash = NetworkAPI.broadcast_tx_testnet(transaction)
+        NetworkAPI.broadcast_tx_testnet(transaction)
 
-        print(f'Transaction hash: {transaction_hash}')
-        print('=======================================================================================================')
+        # print(f'Transaction hash: {transaction_hash}')
+        print('===================================================================================================')
