@@ -1,13 +1,11 @@
 from bit import PrivateKey, PrivateKeyTestnet
 from get_logger import get_logger
 
-from bit import PrivateKeyTestnet
-from bit.network import NetworkAPI, satoshi_to_currency
-
 
 # documentation for bit library: https://ofek.dev/bit/index.html
 ########################################################################################################################
 use_testnet = True
+sign_offline = True
 ########################################################################################################################
 private_key = 'cQ32ujxLKq897Qt84ucVamXrCQU7GWaMQ7QxtLhYrqoGVN5Vurgp'
 address = ''
@@ -18,19 +16,9 @@ message = 'optional'
 ########################################################################################################################
 
 
-
-satoshi_to_currency(NetworkAPI.get_balance_testnet(address), 'eur')
-
-
-tx_data = PrivateKeyTestnet.prepare_transaction(address, [('n2eMqTT929pb1RDNuqEnxdaLau1rxy3efi', 1, 'jpy')])
-
-
-
 if __name__ == '__main__':
     log = get_logger('output.txt', __name__)
     log.info('#==========================================================================#')
-
-
 
     if len(private_key) != 52:
         log.error("The 'private_key' is invalid!")
@@ -64,14 +52,9 @@ if __name__ == '__main__':
         file_name = f'from_{private_key.address}_to_{receiver_address}_{amount_btc}_btc.txt'
         with open(file_name, 'w') as file:
             file.write(transaction)
-
-
     else:
         transaction_hash = private_key.send(**params)
         log.info(f'Transaction: {transaction_hash}')
-
-    a = 12
-
 
 """    
     if amount_btc == -1:
@@ -82,4 +65,3 @@ if __name__ == '__main__':
         transaction_hash = private_key.send([(receiver_address, amount_btc, 'btc')],
                                             leftover=leftover_address, message=message)
 """
-
