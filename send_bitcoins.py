@@ -29,9 +29,11 @@ if __name__ == '__main__':
     if args.testnet:
         Key = PrivateKeyTestnet
         get_balance = NetworkAPI.get_balance_testnet
+        broadcast_tx = NetworkAPI.broadcast_tx_testnet
     else:
         Key = PrivateKey
         get_balance = NetworkAPI.get_balance
+        broadcast_tx = NetworkAPI.broadcast_tx
 
     if args.prepare_transaction:
         input_balance = satoshi_to_currency(get_balance(args.input_address), "btc")
@@ -101,6 +103,6 @@ if __name__ == '__main__':
         with open(args.signed_transaction, 'r') as file:
             transaction = file.read()
 
-        NetworkAPI.broadcast_tx_testnet(transaction)
+        broadcast_tx(transaction)
 
         print('===================================================================================================')
