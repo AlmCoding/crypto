@@ -67,10 +67,7 @@ if __name__ == '__main__':
                                               message=args.message)
         """
 
-        # transaction = Key.prepare_transaction(args.input_address, outputs, leftover=args.leftover_address)
-        # transaction = Key.prepare_transaction('mfhzDB3TvWWPGceK99fmKuN3UftBu8HV1N', [], leftover='n4JWtDkyvNWx2sGGafv14DRxYBHLCamsLh')
-
-        transaction = Key.prepare_transaction('mfhzDB3TvWWPGceK99fmKuN3UftBu8HV1N', [], leftover='n4JWtDkyvNWx2sGGafv14DRxYBHLCamsLh', message='Happy new year')
+        transaction = Key.prepare_transaction(args.input_address, outputs, leftover=args.leftover_address)
 
         file_name = f'from_{args.input_address}_to_{args.output_address}_{args.amount}_btc.json'
         with open(file_name, 'w') as file:
